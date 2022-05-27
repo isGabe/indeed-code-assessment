@@ -2,7 +2,7 @@ const API_URL = 'https://opentdb.com';
 type Options = {
   amount: number;
   category?: number;
-  difficulty?: 'easy' | 'medium' | 'hard' | 'mixed';
+  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Mixed';
 };
 export const getQuestions = async ({
   amount = 10,
