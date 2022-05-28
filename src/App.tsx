@@ -1,53 +1,42 @@
-import { useEffect, useState } from 'react';
-import { ReactComponent as Logo } from './IndeedLogo.svg';
+import { useEffect, useState, FC } from 'react';
+import { Helmet } from 'react-helmet';
 import { getCategories, getQuestions } from './api';
+import SelectMenu from './components/selectMenu';
+import RadioInput from './components/radioInput';
+import Button from './components/button';
+import Question from './components/question';
+import {
+  ApiQuestion,
+  GameQuestion,
+  Category,
+  Options,
+  GameStatus,
+  Difficulty
+} from './types';
 
-export default function App() {
+import {
+  GlobalStyle,
+  Wrapper,
+  Inner,
+  Title,
+  SubHeading,
+  GameOptions,
+  GameOption,
+  OptionsLabel,
+  Difficulties,
+  Questions,
+  Score
+} from './styles';
+const App: FC = () => {
   /**
    * Todo
    * - Add a loading state
-   * - Add question navigation
-   * - Add state for score
-   * - Randomize questions
-   * - Add a timer
+   * - Add timers for answer and next question
    * - Break things out into components
    * - Styling
    */
-  type ApiQuestion = {
-    question: string;
-    category: number;
-    difficulty: string;
-    correct_answer: string;
-    incorrect_answers: string[];
-  };
 
-  type GameQuestion = {
-    question: string;
-    category: number;
-    difficulty: string;
-    answers: string[];
-    correct: string;
-  };
-
-  type Category = {
-    id: number;
-    name: string;
-  };
-
-  type Options = {
-    amount: number;
-    category: number;
-    difficulty: string;
-  };
-
-  type GameStatus = {
-    currentQuestion: number;
-    score: number;
-    isPlaying: boolean;
-    isCurrentCorrect: null | boolean;
-  };
-
-  const difficulties: string[] = ['Easy', 'Medium', 'Hard', 'Mixed'];
+  const difficulties: Difficulty[] = ['Easy', 'Medium', 'Hard', 'Mixed'];
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<GameQuestion[]>([]);
@@ -58,18 +47,16 @@ export default function App() {
   });
 
   const [gameStatus, setGameStatus] = useState<GameStatus>({
-    currentQuestion: 0,
     score: 0,
+    currentQuestion: 0,
     isPlaying: false,
     isCurrentCorrect: null
   });
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [categoryError, setCategoryError] = useState<string>('');
   const [questionsError, setQuestionsError] = useState<string>('');
 
   const handleCategoryChange = (id: number) => {
-    console.log(id);
     setGameOptions({ ...gameOptions, category: id });
   };
 
@@ -96,7 +83,7 @@ export default function App() {
             difficulty,
             correct_answer,
             incorrect_answers
-          }: ApiQuestion) => ({
+          }: ApiQuestion): GameQuestion => ({
             question,
             category,
             difficulty,
@@ -116,12 +103,13 @@ export default function App() {
       });
   };
 
-  const handleCheckAnswer = (answer: string, correctAnswer: string) => {
+  const handleCheckAnswer = (answer: string, correctAnswer: string): void => {
+    console.log(answer, correctAnswer);
     if (answer === correctAnswer) {
       setGameStatus({
         ...gameStatus,
-        score: gameStatus.score + 1,
-        isCurrentCorrect: true
+        isCurrentCorrect: true,
+        score: gameStatus.score + 1
       });
     } else {
       setGameStatus({
@@ -129,8 +117,29 @@ export default function App() {
         isCurrentCorrect: false
       });
     }
+    // setTimeout(() => {
+    //   setGameStatus({
+    //     ...gameStatus,
+    //     currentQuestion: gameStatus.currentQuestion + 1
+    //   });
+    // }, 2000);
+  };
 
-    // setCurrentQuestion(currentQuestion + 1);
+  const handleNextQuestion = (): void => {
+    setGameStatus({
+      ...gameStatus,
+      currentQuestion: gameStatus.currentQuestion + 1,
+      isCurrentCorrect: null
+    });
+  };
+
+  const handleStartOver = (): void => {
+    setGameStatus({
+      score: 0,
+      currentQuestion: 0,
+      isPlaying: false,
+      isCurrentCorrect: null
+    });
   };
 
   useEffect(() => {
@@ -142,96 +151,78 @@ export default function App() {
       });
   }, []);
 
-  console.log(categories, questions);
-  console.log(gameOptions);
   return (
-    <div>
-      <h1>Let's play Trivia!</h1>
-      {gameStatus.isPlaying === false && (
-        <div>
-          <p>Select a category:</p>
-          <div>
-            {categories.map(({ id, name }) => (
-              <label key={id}>
-                <input
-                  type="radio"
-                  value={name}
-                  name="categories"
-                  checked={gameOptions.category === id}
-                  onChange={() => handleCategoryChange(id)}
+    <>
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital@0;1&display=swap"
+          rel="stylesheet"
+        />
+      </Helmet>
+      <GlobalStyle />
+      <Wrapper>
+        <Title>Let's play Trivia!</Title>
+        <Inner>
+          {!gameStatus.isPlaying ? (
+            <GameOptions>
+              <SubHeading>Game Options</SubHeading>
+              <GameOption>
+                <OptionsLabel>Category</OptionsLabel>
+                <SelectMenu
+                  options={categories}
+                  onChange={handleCategoryChange}
+                  label="Category"
                 />
-                {name}
-              </label>
-            ))}
-            <label>
-              <input
-                type="radio"
-                name="categories"
-                checked={gameOptions.category === -1}
-                onChange={() => handleCategoryChange(-1)}
-              />
-              Mixed
-            </label>
-          </div>
-          <p>Select a difficulty:</p>
-          {difficulties.map((level) => (
-            <label key={level}>
-              <input
-                type="radio"
-                value={level}
-                name="difficulty"
-                checked={gameOptions.difficulty === level}
-                onChange={() => handleDifficultyChange(level)}
-              />
-              {level}
-            </label>
-          ))}
-          <button type="button" onClick={handleGetQuestions}>
-            Let's Play!
-          </button>
-        </div>
-      )}
-      <div>
-        {!!questions.length && (
-          <div key={questions[currentQuestion].question}>
-            <span>Category: {questions[currentQuestion].category}</span>
-            <span>Difficulty: {questions[currentQuestion].difficulty}</span>
-            <span>
-              Question {currentQuestion + 1} of {questions.length}
-            </span>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: questions[currentQuestion].question
-              }}
-            />
-            <div>
-              {gameStatus.isCurrentCorrect === true && <span>Correct!</span>}
-              {gameStatus.isCurrentCorrect === false && <span>Incorrect!</span>}
-              {questions[currentQuestion].answers.map((answer) => (
-                <button
-                  key={answer}
-                  type="button"
-                  onClick={() =>
-                    handleCheckAnswer(
-                      answer,
-                      questions[currentQuestion].correct
-                    )
-                  }
-                >
-                  {/* <input
-                    type="radio"
-                    value={answer}
-                    name="answers"
-                    // checked={gameOptions.difficulty === answer}
-                    // onChange={() => handleDifficultyChange(answer)}
-                  /> */}
-                  <span dangerouslySetInnerHTML={{ __html: answer }} />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+              </GameOption>
+              <GameOption>
+                <OptionsLabel>Difficulty</OptionsLabel>
+                <Difficulties>
+                  {difficulties.map((level) => (
+                    <RadioInput
+                      key={level}
+                      label={level}
+                      name="difficulty"
+                      value={level}
+                      checked={gameOptions.difficulty === level}
+                      onChange={() => handleDifficultyChange(level)}
+                    />
+                  ))}
+                </Difficulties>
+              </GameOption>
+              <Button onClick={handleGetQuestions}>Let's Play!</Button>
+            </GameOptions>
+          ) : (
+            <>
+              {questions.length &&
+              gameStatus.currentQuestion <= questions.length - 1 ? (
+                <Question
+                  key={questions[gameStatus.currentQuestion].question}
+                  question={questions[gameStatus.currentQuestion]}
+                  totalQuestions={questions.length}
+                  currentQuestion={gameStatus.currentQuestion}
+                  isCorrect={gameStatus.isCurrentCorrect}
+                  checkAnswer={handleCheckAnswer}
+                  nextQuestion={handleNextQuestion}
+                  startOver={handleStartOver}
+                />
+              ) : (
+                <Score>
+                  <SubHeading>That's it!</SubHeading>
+                  <p>Score {gameStatus.score}</p>
+                </Score>
+              )}
+            </>
+          )}
+        </Inner>
+      </Wrapper>
+    </>
   );
-}
+};
+
+export default App;
