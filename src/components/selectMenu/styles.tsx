@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
 export const SelectWrapper = styled.div`
   align-items: center;
   border-radius: 0.5rem;
-  border: 1px solid var(--grayMedium);
+  border: 1px solid var(--gray-6);
   cursor: pointer;
   display: grid;
   font-size: 1rem;
@@ -28,7 +28,7 @@ export const SelectWrapper = styled.div`
     justify-self: end;
     width: 0.8em;
     height: 0.5em;
-    background-color: var(--grayMedium);
+    background-color: var(--gray-6);
     clip-path: polygon(100% 0%, 0 0%, 50% 100%);
   }
 
@@ -38,7 +38,7 @@ export const SelectWrapper = styled.div`
     left: -1px;
     right: -1px;
     bottom: -1px;
-    border: 2px solid var(--select-focus);
+    border: 2px solid var(--gray-3);
     border-radius: inherit;
   }
 `;

@@ -8,6 +8,6 @@ export const Label = styled.label`
 export const Input = styled.input`
   width: 1.2em;
   height: 1.2rem;
-  accent-color: var(--blue);
+  accent-color: var(--blue-9);
   margin-right: 0.25rem;
 `;

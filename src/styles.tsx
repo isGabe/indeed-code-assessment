@@ -4,15 +4,8 @@ import 'open-props/style';
 
 export const GlobalStyle = createGlobalStyle`
 
-  :root {
-    --grayLight: #fafafa;
-    --grayMedium: #949494;
-    --grayDark: #2d2d2d;
-    --blue: #2557a7;
-  }
 
   body {
-    color: var(--grayDark);
     font-family: 'Noto Sans', sans-serif;
   }
 
@@ -41,8 +34,8 @@ export const Wrapper = styled.div`
   border-radius: var(--radius-3);
   box-shadow: var(--shadow-6);
   margin: 3rem auto 0;
-  max-width: 600px;
   overflow: hidden;
+  width: min(95%, 800px);
 `;
 
 export const Inner = styled.div`
@@ -59,7 +52,7 @@ export const Title = styled.h1`
 `;
 
 export const SubHeading = styled.h2`
-  border-bottom: solid 1px var(--grayMedium);
+  border-bottom: solid 1px var(--gray-5);
   padding: 0 0 0.75rem 0.5rem;
   width: 100%;
 `;
@@ -78,8 +71,12 @@ export const GameOption = styled.div`
 export const Difficulties = styled.div`
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
   margin: 1rem 0 2rem;
 `;
-export const Questions = styled.div``;
 
 export const Score = styled.div``;
+
+export const ScoreMessage = styled.p`
+  margin: 2rem 0 2rem 1rem;
+`;
