@@ -1,5 +1,6 @@
 import { useEffect, useState, FC } from 'react';
 import { Helmet } from 'react-helmet';
+import { MdArrowRightAlt, MdAutorenew } from 'react-icons/md';
 import { getCategories, getQuestions } from './api';
 import SelectMenu from './components/selectMenu';
 import RadioInput from './components/radioInput';
@@ -24,20 +25,11 @@ import {
   GameOption,
   OptionsLabel,
   Difficulties,
-  Questions,
-  Score
+  Score,
+  ScoreMessage
 } from './styles';
 const App: FC = () => {
-  /**
-   * Todo
-   * - Add a loading state
-   * - Add timers for answer and next question
-   * - Break things out into components
-   * - Styling
-   */
-
   const difficulties: Difficulty[] = ['Easy', 'Medium', 'Hard', 'Mixed'];
-
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<GameQuestion[]>([]);
   const [gameOptions, setGameOptions] = useState<Options>({
@@ -90,7 +82,19 @@ const App: FC = () => {
             correct: correct_answer
           })
         );
-        setQuestions(questions);
+        // Adding a question with multiple correct answers to satisfy requirements.
+        // The Open Triva DB API does not provide a way to get questions with multiple correct answers.
+        const multiAnswerQuestion = {
+          answers: ['Wyoming', 'Idaho', 'Arizona', 'Kansas'],
+          category: 'Geography',
+          correct: ['Wyoming', 'Idaho'],
+          difficulty: 'easy',
+          question: 'Which of these states is north of Colorado?'
+        };
+
+        const newQuestions = questions;
+        newQuestions.splice(0, 1, multiAnswerQuestion);
+        setQuestions(newQuestions);
         setGameStatus({
           ...gameStatus,
           isPlaying: true
@@ -186,7 +190,9 @@ const App: FC = () => {
               ) : (
                 <Score>
                   <SubHeading>That's it!</SubHeading>
-                  <p>Score {gameStatus.score}</p>
+                  <ScoreMessage>
+                    Your score: {gameStatus.score} / {questions.length}
+                  </ScoreMessage>
                   <Button
                     type="button"
                     onClick={() => handleStartOver()}

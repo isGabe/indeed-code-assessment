@@ -26,7 +26,7 @@ export const Answers = styled.div`
   display: grid;
   gap: 1rem;
   grid-template-columns: auto auto;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 `;
 
 export const Message = styled.span`

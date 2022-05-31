@@ -1,6 +1,6 @@
 export type ApiQuestion = {
   question: string;
-  category: number;
+  category: string;
   difficulty: string;
   correct_answer: string;
   incorrect_answers: string[];
@@ -8,10 +8,10 @@ export type ApiQuestion = {
 
 export type GameQuestion = {
   question: string;
-  category: number;
+  category: string;
   difficulty: string;
   answers: string[];
-  correct: string;
+  correct: string | string[];
 };
 
 export type Category = {
