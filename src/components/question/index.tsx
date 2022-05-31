@@ -93,17 +93,19 @@ const Question: FC<IQuestionProps> = ({
           type="button"
           onClick={() => startOver()}
           content="Start over"
+          icon={<MdAutorenew />}
         />
-        {isCorrect !== null && (
-          <Button
-            onClick={() => handleNextQuestion()}
-            content={
-              gameStatus.currentQuestion === totalQuestions - 1
-                ? 'Finish'
-                : 'Next Question'
-            }
-          />
-        )}
+        <Button
+          className="next"
+          onClick={() => handleNextQuestion()}
+          content={
+            gameStatus.currentQuestion === totalQuestions - 1
+              ? 'Get Score'
+              : 'Next Question'
+          }
+          icon={<MdArrowRightAlt />}
+          disabled={isCorrect === null}
+        />
       </Navigation>
     </Wrapper>
   );

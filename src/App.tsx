@@ -163,7 +163,12 @@ const App: FC = () => {
                   ))}
                 </Difficulties>
               </GameOption>
-              <Button onClick={handleGetQuestions} content="Let's Play" />
+              <Button
+                onClick={handleGetQuestions}
+                content="Let's Play"
+                className="play"
+                icon={<MdArrowRightAlt />}
+              />
             </GameOptions>
           ) : (
             <>
@@ -186,6 +191,7 @@ const App: FC = () => {
                     type="button"
                     onClick={() => handleStartOver()}
                     content="Start over"
+                    icon={<MdAutorenew />}
                   />
                 </Score>
               )}

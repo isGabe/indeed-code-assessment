@@ -2,12 +2,14 @@ import { FC } from 'react';
 import { ButtonEl } from './styles';
 interface IButtonProps {
   className?: string;
+  children?: React.ReactNode;
   onClick: (e: any) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   disabled?: boolean;
   variant?: 'outlined' | 'solid';
-  isCorrect?: boolean | null;
+  answerStatus?: string;
   content: string;
+  icon?: React.ReactNode;
 }
 
 const Button: FC<IButtonProps> = ({
@@ -17,7 +19,8 @@ const Button: FC<IButtonProps> = ({
   type = 'button',
   variant = 'solid',
   disabled,
-  isCorrect
+  answerStatus,
+  icon
 }) => {
   return (
     <ButtonEl
@@ -26,9 +29,11 @@ const Button: FC<IButtonProps> = ({
       type={type}
       disabled={disabled}
       variant={variant}
-      isCorrect={isCorrect}
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
+      answerStatus={answerStatus}
+    >
+      <span className="icon">{icon}</span>
+      <span className="text" dangerouslySetInnerHTML={{ __html: content }} />
+    </ButtonEl>
   );
 };
 
