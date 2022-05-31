@@ -195,7 +195,7 @@ const App: FC = () => {
                   ))}
                 </Difficulties>
               </GameOption>
-              <Button onClick={handleGetQuestions}>Let's Play!</Button>
+              <Button onClick={handleGetQuestions} content="Let's Play" />
             </GameOptions>
           ) : (
             <>

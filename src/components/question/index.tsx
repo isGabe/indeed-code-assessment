@@ -65,15 +65,20 @@ const Question: FC<IQuestionProps> = ({
         ))}
       </Answers>
       <Navigation>
-        <Button type="button" onClick={() => startOver()}>
-          Start over
-        </Button>
+        <Button
+          type="button"
+          onClick={() => startOver()}
+          content="Start over"
+        />
         {isCorrect !== null && (
-          <Button onClick={() => nextQuestion()}>
-            {currentQuestion === totalQuestions - 1
-              ? 'Finish'
-              : 'Next Question'}
-          </Button>
+          <Button
+            onClick={() => handleNextQuestion()}
+            content={
+              gameStatus.currentQuestion === totalQuestions - 1
+                ? 'Finish'
+                : 'Next Question'
+            }
+          />
         )}
       </Navigation>
     </Wrapper>

@@ -2,17 +2,17 @@ import { FC } from 'react';
 import { ButtonEl } from './styles';
 interface IButtonProps {
   className?: string;
-  children: React.ReactNode;
   onClick: (e: any) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   disabled?: boolean;
   variant?: 'outlined' | 'solid';
   isCorrect?: boolean | null;
+  content: string;
 }
 
 const Button: FC<IButtonProps> = ({
   className,
-  children,
+  content,
   onClick,
   type = 'button',
   variant = 'solid',
@@ -23,13 +23,12 @@ const Button: FC<IButtonProps> = ({
     <ButtonEl
       className={className}
       onClick={onClick}
-      type="button"
+      type={type}
       disabled={disabled}
       variant={variant}
       isCorrect={isCorrect}
-    >
-      {children}
-    </ButtonEl>
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
   );
 };
 
