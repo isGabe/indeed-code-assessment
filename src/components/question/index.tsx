@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, useState, Dispatch, SetStateAction } from 'react';
 import Button from '../button';
 // import { StyledButton } from './styles';
-import { GameQuestion } from '../../types';
+import { GameQuestion, GameStatus } from '../../types';
 
 import {
   Wrapper,
@@ -16,21 +16,46 @@ interface IQuestionProps {
   question: GameQuestion;
   currentQuestion: number;
   totalQuestions: number;
-  checkAnswer: (answer: string, correctAnswer: string) => void;
-  nextQuestion: () => void;
+  setGameStatus: Dispatch<SetStateAction<GameStatus>>;
+  gameStatus: GameStatus;
   startOver: () => void;
-  isCorrect: boolean | null;
 }
 
 const Question: FC<IQuestionProps> = ({
   question,
   currentQuestion,
   totalQuestions,
-  checkAnswer,
-  nextQuestion,
-  startOver,
-  isCorrect
+  setGameStatus,
+  gameStatus,
+  startOver
 }) => {
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+
+  const handleCheckAnswer = (answer: string, correctAnswer: string): void => {
+    console.log(answer, correctAnswer);
+    if (answer === correctAnswer) {
+      setIsCorrect(true);
+      setGameStatus({
+        ...gameStatus,
+        score: gameStatus.score + 1
+      });
+    } else {
+      setIsCorrect(false);
+    }
+    // setTimeout(() => {
+    //   setGameStatus({
+    //     ...gameStatus,
+    //     currentQuestion: gameStatus.currentQuestion + 1
+    //   });
+    // }, 2000);
+  };
+
+  const handleNextQuestion = (): void => {
+    setGameStatus({
+      ...gameStatus,
+      currentQuestion: gameStatus.currentQuestion + 1
+    });
+  };
   return (
     <Wrapper key={question.question}>
       <Info>
@@ -55,13 +80,12 @@ const Question: FC<IQuestionProps> = ({
             key={answer}
             onClick={(e: any) => {
               e.target.classList.add('selected');
-              checkAnswer(answer, question.correct);
+              handleCheckAnswer(answer, question.correct);
             }}
             disabled={isCorrect !== null}
             isCorrect={answer === question.correct}
-          >
-            <span dangerouslySetInnerHTML={{ __html: answer }} />
-          </Button>
+            content={answer}
+          />
         ))}
       </Answers>
       <Navigation>

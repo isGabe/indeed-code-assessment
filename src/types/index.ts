@@ -29,7 +29,6 @@ export type GameStatus = {
   score: number;
   currentQuestion: number;
   isPlaying: boolean;
-  isCurrentCorrect: null | boolean;
 };
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard' | 'Mixed';

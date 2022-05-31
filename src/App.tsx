@@ -49,8 +49,7 @@ const App: FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>({
     score: 0,
     currentQuestion: 0,
-    isPlaying: false,
-    isCurrentCorrect: null
+    isPlaying: false
   });
 
   const [categoryError, setCategoryError] = useState<string>('');
@@ -103,42 +102,11 @@ const App: FC = () => {
       });
   };
 
-  const handleCheckAnswer = (answer: string, correctAnswer: string): void => {
-    console.log(answer, correctAnswer);
-    if (answer === correctAnswer) {
-      setGameStatus({
-        ...gameStatus,
-        isCurrentCorrect: true,
-        score: gameStatus.score + 1
-      });
-    } else {
-      setGameStatus({
-        ...gameStatus,
-        isCurrentCorrect: false
-      });
-    }
-    // setTimeout(() => {
-    //   setGameStatus({
-    //     ...gameStatus,
-    //     currentQuestion: gameStatus.currentQuestion + 1
-    //   });
-    // }, 2000);
-  };
-
-  const handleNextQuestion = (): void => {
-    setGameStatus({
-      ...gameStatus,
-      currentQuestion: gameStatus.currentQuestion + 1,
-      isCurrentCorrect: null
-    });
-  };
-
   const handleStartOver = (): void => {
     setGameStatus({
       score: 0,
       currentQuestion: 0,
-      isPlaying: false,
-      isCurrentCorrect: null
+      isPlaying: false
     });
   };
 
@@ -206,15 +174,19 @@ const App: FC = () => {
                   question={questions[gameStatus.currentQuestion]}
                   totalQuestions={questions.length}
                   currentQuestion={gameStatus.currentQuestion}
-                  isCorrect={gameStatus.isCurrentCorrect}
-                  checkAnswer={handleCheckAnswer}
-                  nextQuestion={handleNextQuestion}
+                  setGameStatus={setGameStatus}
+                  gameStatus={gameStatus}
                   startOver={handleStartOver}
                 />
               ) : (
                 <Score>
                   <SubHeading>That's it!</SubHeading>
                   <p>Score {gameStatus.score}</p>
+                  <Button
+                    type="button"
+                    onClick={() => handleStartOver()}
+                    content="Start over"
+                  />
                 </Score>
               )}
             </>
