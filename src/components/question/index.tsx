@@ -1,6 +1,6 @@
 import { FC, useState, Dispatch, SetStateAction } from 'react';
 import Button from '../button';
-// import { StyledButton } from './styles';
+import { MdArrowRightAlt, MdAutorenew, MdDone, MdClear } from 'react-icons/md';
 import { GameQuestion, GameStatus } from '../../types';
 
 import {
@@ -30,10 +30,14 @@ const Question: FC<IQuestionProps> = ({
   startOver
 }) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
-  const handleCheckAnswer = (answer: string, correctAnswer: string): void => {
-    console.log(answer, correctAnswer);
-    if (answer === correctAnswer) {
+  const handleCheckAnswer = (
+    answer: string,
+    correctAnswer: string | string[]
+  ): void => {
+    setSelectedAnswer(answer);
+    if (answer === correctAnswer || correctAnswer.includes(answer)) {
       setIsCorrect(true);
       setGameStatus({
         ...gameStatus,
@@ -42,12 +46,6 @@ const Question: FC<IQuestionProps> = ({
     } else {
       setIsCorrect(false);
     }
-    // setTimeout(() => {
-    //   setGameStatus({
-    //     ...gameStatus,
-    //     currentQuestion: gameStatus.currentQuestion + 1
-    //   });
-    // }, 2000);
   };
 
   const handleNextQuestion = (): void => {
@@ -56,13 +54,34 @@ const Question: FC<IQuestionProps> = ({
       currentQuestion: gameStatus.currentQuestion + 1
     });
   };
+
+  const getAnswerStatus = (answer: string): string | undefined => {
+    if (selectedAnswer === answer) {
+      return isCorrect ? 'correct' : 'incorrect';
+    }
+
+    return undefined;
+  };
+
+  const getAnswerIcon = (answer: string): JSX.Element | undefined => {
+    if (selectedAnswer === answer) {
+      return isCorrect ? <MdDone /> : <MdClear />;
+    }
+
+    return undefined;
+  };
+
+  console.log(selectedAnswer);
   return (
     <Wrapper key={question.question}>
       <Info>
-        <Detail>Category: {question.category}</Detail>
-        <Detail>Difficulty: {question.difficulty}</Detail>
         <Detail>
-          Question {currentQuestion + 1} of {totalQuestions}
+          <span className="label">Category:</span>{' '}
+          <span className="text">{question.category}</span>
+        </Detail>
+        <Detail>
+          <span className="label">Difficulty:</span>{' '}
+          <span className="text">{question.difficulty}</span>
         </Detail>
       </Info>
       <QuestionEl
@@ -70,20 +89,23 @@ const Question: FC<IQuestionProps> = ({
           __html: question.question
         }}
       />
-      {isCorrect === true && <Message>Correct!</Message>}
-      {isCorrect === false && <Message inCorrect>Incorrect!</Message>}
+      <Message isCorrect={isCorrect !== null && isCorrect}>
+        {isCorrect !== null && isCorrect
+          ? 'Correct!'
+          : isCorrect !== null && !isCorrect
+          ? 'Incorrect!'
+          : ''}
+      </Message>
       <Answers>
         {question.answers.map((answer) => (
           <Button
             className="answer"
             variant="outlined"
             key={answer}
-            onClick={(e: any) => {
-              e.target.classList.add('selected');
-              handleCheckAnswer(answer, question.correct);
-            }}
+            onClick={() => handleCheckAnswer(answer, question.correct)}
             disabled={isCorrect !== null}
-            isCorrect={answer === question.correct}
+            answerStatus={getAnswerStatus(answer)}
+            icon={getAnswerIcon(answer)}
             content={answer}
           />
         ))}
@@ -107,6 +129,9 @@ const Question: FC<IQuestionProps> = ({
           disabled={isCorrect === null}
         />
       </Navigation>
+      <Detail>
+        Question {currentQuestion + 1} of {totalQuestions}
+      </Detail>
     </Wrapper>
   );
 };
