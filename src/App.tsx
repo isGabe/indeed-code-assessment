@@ -80,35 +80,6 @@ const App: FC = () => {
     });
   };
 
-  const getScoreMessage = (score: number, totalQuestions: number) => {
-    if (score / totalQuestions === 1) {
-      return "Prefect Score! You're a Trivia Master!";
-    }
-
-    if (score / totalQuestions >= 0.8) {
-      return 'You are a Trivia Wizard!';
-    }
-
-    if (score / totalQuestions >= 0.5) {
-      return 'Not bad!';
-    }
-
-    if (score / totalQuestions >= 0.1) {
-      return 'Not bad, but you can do better!';
-    }
-
-    return 'Better luck next time!';
-  };
-
-  useEffect(() => {
-    getCategories()
-      .then((data) => setCategories(data))
-      .catch((err) => {
-        console.log(err);
-        setCategoryError(err);
-      });
-  }, []);
-
   return (
     <>
       <Helmet>
@@ -134,10 +105,7 @@ const App: FC = () => {
             Score: ${gameStatus.score}`}
           </Title>
         )}
-        {gameStatus.view === 'score' && (
-          <Title>{getScoreMessage(gameStatus.score, questions.length)}</Title>
-        )}
-
+        {gameStatus.view === 'score' && <Title>How did you do?</Title>}
         <Inner>
           {gameStatus.view === 'options' && (
             <GameOptions getQuestions={handleGetQuestions} />
@@ -156,17 +124,13 @@ const App: FC = () => {
               />
             )}{' '}
           {gameStatus.view === 'score' && (
-            <Score>
-              <ScoreMessage>
-                Your score: {gameStatus.score} / {questions.length}
-              </ScoreMessage>
-              <Button
-                type="button"
-                onClick={() => handleStartOver()}
-                content="Start over"
-                icon={<MdAutorenew />}
+            <>
+              <Score
+                score={gameStatus.score}
+                totalQuestions={questions.length}
+                startOver={handleStartOver}
               />
-            </Score>
+            </>
           )}
         </Inner>
       </Wrapper>

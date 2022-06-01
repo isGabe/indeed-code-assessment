@@ -1,0 +1,22 @@
+import styled from 'styled-components';
+
+export const Wrapper = styled.div`
+  padding: 2rem;
+  text-align: center;
+`;
+
+export const ScoreMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 250px;
+    margin-bottom: 2rem;
+  }
+  h2 {
+    max-inline-size: unset;
+    margin-bottom: 2rem;
+  }
+`;
