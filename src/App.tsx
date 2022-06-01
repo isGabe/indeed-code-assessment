@@ -19,8 +19,15 @@ const App: FC = () => {
 
   const [questionsError, setQuestionsError] = useState<string>('');
 
+  // The Open Trivia API returns the correct answer separately,
+  // so we need to combine it with the other answers.
   const formatAnswers = (incorrect: string[], correct: string): string[] => {
     const allAnswers = [...incorrect, correct];
+    // If it's a true false question, we don't need to shuffle the answers.
+    if (allAnswers.length === 2) {
+      return allAnswers;
+    }
+    // Shuffle the answers, so the correct answer isn't always in the same position.
     const shuffledAnswers = allAnswers
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
