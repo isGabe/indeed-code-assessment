@@ -5,7 +5,6 @@ export const Info = styled.div`
   color: var(--gray-7);
   display: flex;
   font-size: var(--font-size-1);
-
   gap: 1rem;
   justify-content: center;
   margin-bottom: 1rem;
@@ -17,16 +16,30 @@ export const Detail = styled.span`
     color: var(--gray-7);
   }
 `;
+
 export const QuestionEl = styled.p`
   font-size: var(--font-size-3);
   margin-bottom: 2rem;
 `;
 
 export const Answers = styled.div`
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: auto auto;
   margin-bottom: 4rem;
+
+  .answer {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: auto auto;
+
+    .answer {
+      width: unset;
+      margin-bottom: unset;
+    }
+  }
 `;
 
 export const Message = styled.span`
@@ -42,5 +55,4 @@ export const Message = styled.span`
 export const Navigation = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2rem;
 `;

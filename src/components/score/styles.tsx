@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-  padding: 2rem;
   text-align: center;
+
+  .playAgain {
+    display: inline-flex;
+  }
 `;
 
 export const ScoreMessage = styled.div`
@@ -15,8 +18,13 @@ export const ScoreMessage = styled.div`
     max-width: 250px;
     margin-bottom: 2rem;
   }
+
   h2 {
     max-inline-size: unset;
+    margin-bottom: 2rem;
+  }
+
+  p {
     margin-bottom: 2rem;
   }
 `;

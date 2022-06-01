@@ -57,6 +57,7 @@ const Score: FC<IScoreProps> = ({ score, totalQuestions, startOver }) => {
         </p>
       </ScoreMessage>
       <Button
+        className="playAgain"
         type="button"
         onClick={() => startOver()}
         content="Play again!"
