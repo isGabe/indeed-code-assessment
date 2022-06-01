@@ -1,62 +1,27 @@
 import { useEffect, useState, FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { MdArrowRightAlt, MdAutorenew } from 'react-icons/md';
+import { MdArrowRightAlt } from 'react-icons/md';
 import { getCategories, getQuestions } from './api';
 import SelectMenu from './components/selectMenu';
 import RadioInput from './components/radioInput';
 import Button from './components/button';
 import Question from './components/question';
-import {
-  ApiQuestion,
-  GameQuestion,
-  Category,
-  Options,
-  GameStatus,
-  Difficulty
-} from './types';
+import GameOptions from './components/gameOptions';
+import Score from './components/score';
+import { ApiQuestion, GameQuestion, Options, GameStatus } from './types';
 
-import {
-  GlobalStyle,
-  Wrapper,
-  Inner,
-  Title,
-  SubHeading,
-  GameOptions,
-  GameOption,
-  OptionsLabel,
-  Difficulties,
-  Score,
-  ScoreMessage
-} from './styles';
+import { GlobalStyle, Wrapper, Inner, Title } from './styles';
 const App: FC = () => {
-  const difficulties: Difficulty[] = ['Easy', 'Medium', 'Hard', 'Mixed'];
-
-  const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<GameQuestion[]>([]);
-  const [gameOptions, setGameOptions] = useState<Options>({
-    amount: 10,
-    category: -1,
-    difficulty: 'Mixed'
-  });
-
   const [gameStatus, setGameStatus] = useState<GameStatus>({
     score: 0,
     currentQuestion: 0,
     view: 'options'
   });
 
-  const [categoryError, setCategoryError] = useState<string>('');
   const [questionsError, setQuestionsError] = useState<string>('');
 
-  const handleCategoryChange = (id: number) => {
-    setGameOptions({ ...gameOptions, category: id });
-  };
-
-  const handleDifficultyChange = (difficulty: string) => {
-    setGameOptions({ ...gameOptions, difficulty });
-  };
-
-  const getAnswers = (incorrect: string[], correct: string): string[] => {
+  const formatAnswers = (incorrect: string[], correct: string): string[] => {
     const allAnswers = [...incorrect, correct];
     const shuffledAnswers = allAnswers
       .map((value) => ({ value, sort: Math.random() }))
@@ -65,7 +30,7 @@ const App: FC = () => {
     return shuffledAnswers;
   };
 
-  const handleGetQuestions = () => {
+  const handleGetQuestions = (gameOptions: Options) => {
     getQuestions(gameOptions)
       .then((data) => {
         const questions = data.map(
@@ -79,7 +44,7 @@ const App: FC = () => {
             question,
             category,
             difficulty,
-            answers: getAnswers(incorrect_answers, correct_answer),
+            answers: formatAnswers(incorrect_answers, correct_answer),
             correct: correct_answer
           })
         );
@@ -175,38 +140,7 @@ const App: FC = () => {
 
         <Inner>
           {gameStatus.view === 'options' && (
-            <GameOptions>
-              <SubHeading>Game Options</SubHeading>
-              <GameOption>
-                <OptionsLabel>Category</OptionsLabel>
-                <SelectMenu
-                  options={categories}
-                  onChange={handleCategoryChange}
-                  label="Category"
-                />
-              </GameOption>
-              <GameOption>
-                <OptionsLabel>Difficulty</OptionsLabel>
-                <Difficulties>
-                  {difficulties.map((level) => (
-                    <RadioInput
-                      key={level}
-                      label={level}
-                      name="difficulty"
-                      value={level}
-                      checked={gameOptions.difficulty === level}
-                      onChange={() => handleDifficultyChange(level)}
-                    />
-                  ))}
-                </Difficulties>
-              </GameOption>
-              <Button
-                onClick={handleGetQuestions}
-                content="Let's Play"
-                className="play"
-                icon={<MdArrowRightAlt />}
-              />
-            </GameOptions>
+            <GameOptions getQuestions={handleGetQuestions} />
           )}
           {gameStatus.view === 'question' &&
             questions.length &&
