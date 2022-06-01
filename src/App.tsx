@@ -30,6 +30,7 @@ import {
 } from './styles';
 const App: FC = () => {
   const difficulties: Difficulty[] = ['Easy', 'Medium', 'Hard', 'Mixed'];
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<GameQuestion[]>([]);
   const [gameOptions, setGameOptions] = useState<Options>({
@@ -41,7 +42,7 @@ const App: FC = () => {
   const [gameStatus, setGameStatus] = useState<GameStatus>({
     score: 0,
     currentQuestion: 0,
-    isPlaying: false
+    view: 'options'
   });
 
   const [categoryError, setCategoryError] = useState<string>('');
@@ -97,7 +98,7 @@ const App: FC = () => {
         setQuestions(newQuestions);
         setGameStatus({
           ...gameStatus,
-          isPlaying: true
+          view: 'question'
         });
       })
       .catch((err) => {
@@ -110,8 +111,28 @@ const App: FC = () => {
     setGameStatus({
       score: 0,
       currentQuestion: 0,
-      isPlaying: false
+      view: 'options'
     });
+  };
+
+  const getScoreMessage = (score: number, totalQuestions: number) => {
+    if (score / totalQuestions === 1) {
+      return "Prefect Score! You're a Trivia Master!";
+    }
+
+    if (score / totalQuestions >= 0.8) {
+      return 'You are a Trivia Wizard!';
+    }
+
+    if (score / totalQuestions >= 0.5) {
+      return 'Not bad!';
+    }
+
+    if (score / totalQuestions >= 0.1) {
+      return 'Not bad, but you can do better!';
+    }
+
+    return 'Better luck next time!';
   };
 
   useEffect(() => {
@@ -139,9 +160,21 @@ const App: FC = () => {
       </Helmet>
       <GlobalStyle />
       <Wrapper>
-        <Title>Let's play Trivia!</Title>
+        {gameStatus.view === 'options' && <Title>Let's play Trivia!</Title>}
+        {gameStatus.view === 'question' && (
+          <Title>
+            {`Question ${gameStatus.currentQuestion + 1} of ${
+              questions.length
+            } |
+            Score: ${gameStatus.score}`}
+          </Title>
+        )}
+        {gameStatus.view === 'score' && (
+          <Title>{getScoreMessage(gameStatus.score, questions.length)}</Title>
+        )}
+
         <Inner>
-          {!gameStatus.isPlaying ? (
+          {gameStatus.view === 'options' && (
             <GameOptions>
               <SubHeading>Game Options</SubHeading>
               <GameOption>
@@ -174,34 +207,32 @@ const App: FC = () => {
                 icon={<MdArrowRightAlt />}
               />
             </GameOptions>
-          ) : (
-            <>
-              {questions.length &&
-              gameStatus.currentQuestion <= questions.length - 1 ? (
-                <Question
-                  key={questions[gameStatus.currentQuestion].question}
-                  question={questions[gameStatus.currentQuestion]}
-                  totalQuestions={questions.length}
-                  currentQuestion={gameStatus.currentQuestion}
-                  setGameStatus={setGameStatus}
-                  gameStatus={gameStatus}
-                  startOver={handleStartOver}
-                />
-              ) : (
-                <Score>
-                  <SubHeading>That's it!</SubHeading>
-                  <ScoreMessage>
-                    Your score: {gameStatus.score} / {questions.length}
-                  </ScoreMessage>
-                  <Button
-                    type="button"
-                    onClick={() => handleStartOver()}
-                    content="Start over"
-                    icon={<MdAutorenew />}
-                  />
-                </Score>
-              )}
-            </>
+          )}
+          {gameStatus.view === 'question' &&
+            questions.length &&
+            gameStatus.currentQuestion <= questions.length - 1 && (
+              <Question
+                key={questions[gameStatus.currentQuestion].question}
+                question={questions[gameStatus.currentQuestion]}
+                totalQuestions={questions.length}
+                currentQuestion={gameStatus.currentQuestion}
+                setGameStatus={setGameStatus}
+                gameStatus={gameStatus}
+                startOver={handleStartOver}
+              />
+            )}{' '}
+          {gameStatus.view === 'score' && (
+            <Score>
+              <ScoreMessage>
+                Your score: {gameStatus.score} / {questions.length}
+              </ScoreMessage>
+              <Button
+                type="button"
+                onClick={() => handleStartOver()}
+                content="Start over"
+                icon={<MdAutorenew />}
+              />
+            </Score>
           )}
         </Inner>
       </Wrapper>

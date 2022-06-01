@@ -28,7 +28,7 @@ export type Options = {
 export type GameStatus = {
   score: number;
   currentQuestion: number;
-  isPlaying: boolean;
+  view: 'options' | 'question' | 'score';
 };
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard' | 'Mixed';

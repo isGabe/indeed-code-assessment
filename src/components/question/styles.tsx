@@ -18,7 +18,7 @@ export const Detail = styled.span`
   }
 `;
 export const QuestionEl = styled.p`
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-3);
   margin-bottom: 2rem;
 `;
 

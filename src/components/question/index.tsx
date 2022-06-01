@@ -49,10 +49,17 @@ const Question: FC<IQuestionProps> = ({
   };
 
   const handleNextQuestion = (): void => {
-    setGameStatus({
-      ...gameStatus,
-      currentQuestion: gameStatus.currentQuestion + 1
-    });
+    if (currentQuestion + 1 !== totalQuestions) {
+      setGameStatus({
+        ...gameStatus,
+        currentQuestion: gameStatus.currentQuestion + 1
+      });
+    } else {
+      setGameStatus({
+        ...gameStatus,
+        view: 'score'
+      });
+    }
   };
 
   const getAnswerStatus = (answer: string): string | undefined => {
@@ -71,7 +78,6 @@ const Question: FC<IQuestionProps> = ({
     return undefined;
   };
 
-  console.log(selectedAnswer);
   return (
     <Wrapper key={question.question}>
       <Info>
@@ -129,9 +135,6 @@ const Question: FC<IQuestionProps> = ({
           disabled={isCorrect === null}
         />
       </Navigation>
-      <Detail>
-        Question {currentQuestion + 1} of {totalQuestions}
-      </Detail>
     </Wrapper>
   );
 };
