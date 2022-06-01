@@ -1,9 +1,7 @@
-import { useEffect, useState, FC } from 'react';
+import { useState, FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { MdArrowRightAlt } from 'react-icons/md';
-import { getCategories, getQuestions } from './api';
-import SelectMenu from './components/selectMenu';
-import RadioInput from './components/radioInput';
+import { MdAutorenew } from 'react-icons/md';
+import { getQuestions } from './api';
 import Button from './components/button';
 import Question from './components/question';
 import GameOptions from './components/gameOptions';
@@ -111,8 +109,7 @@ const App: FC = () => {
             <GameOptions getQuestions={handleGetQuestions} />
           )}
           {gameStatus.view === 'question' &&
-            questions.length &&
-            gameStatus.currentQuestion <= questions.length - 1 && (
+            (questions.length && !questionsError ? (
               <Question
                 key={questions[gameStatus.currentQuestion].question}
                 question={questions[gameStatus.currentQuestion]}
@@ -122,15 +119,25 @@ const App: FC = () => {
                 gameStatus={gameStatus}
                 startOver={handleStartOver}
               />
-            )}{' '}
+            ) : (
+              <div>
+                <p>
+                  There was a problem fetching the questions. Please try again.
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => handleStartOver()}
+                  content="Start over"
+                  icon={<MdAutorenew />}
+                />{' '}
+              </div>
+            ))}
           {gameStatus.view === 'score' && (
-            <>
-              <Score
-                score={gameStatus.score}
-                totalQuestions={questions.length}
-                startOver={handleStartOver}
-              />
-            </>
+            <Score
+              score={gameStatus.score}
+              totalQuestions={questions.length}
+              startOver={handleStartOver}
+            />
           )}
         </Inner>
       </Wrapper>

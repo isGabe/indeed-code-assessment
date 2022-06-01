@@ -43,6 +43,17 @@ const GameOptions: FC<IGameOptionsProps> = ({ getQuestions }) => {
       });
   }, []);
 
+  if (categoryError) {
+    return (
+      <Wrapper>
+        <SubHeading>
+          There was a problem fetching the categories. Try refreshing the
+          page...
+        </SubHeading>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <SubHeading>Game Options</SubHeading>
