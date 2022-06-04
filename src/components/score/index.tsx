@@ -18,13 +18,31 @@ type ScoreMessage = {
   image: string;
 };
 
+type ScoreData = {
+  score: number;
+  totalQuestions: number;
+  date: string;
+};
+
 const Score: FC<IScoreProps> = ({ score, totalQuestions, startOver }) => {
+  const [existingScores, setExistingScores] = useState<ScoreData[]>(() => {
+    const data = localStorage.getItem('scores');
+    if (data) {
+      return JSON.parse(data);
+    }
+    return [];
+  });
+
   const [scoreMessage, setScoreMessage] = useState<ScoreMessage>({
     message: '',
     image: ''
   });
 
   useEffect(() => {
+    setExistingScores([
+      ...existingScores,
+      { score, totalQuestions, date: new Date().toLocaleDateString() }
+    ]);
     if (score / totalQuestions === 1) {
       setScoreMessage({
         message: "Prefect Score! You're a Trivia Master!",
@@ -47,6 +65,16 @@ const Score: FC<IScoreProps> = ({ score, totalQuestions, startOver }) => {
     }
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('scores', JSON.stringify(existingScores));
+  }, [existingScores]);
+
+  const getHighScoreMessage = (): string => {
+    const highScore = existingScores.reduce((acc, curr) => {
+      return curr.score > acc.score ? curr : acc;
+    });
+    return `Your best score so far was ${highScore.score} out of ${highScore.totalQuestions}, which you got on ${highScore.date}.`;
+  };
   return (
     <Wrapper>
       <ScoreMessage>
@@ -55,6 +83,7 @@ const Score: FC<IScoreProps> = ({ score, totalQuestions, startOver }) => {
         <p>
           You got {score} questions out of {totalQuestions} right!
         </p>
+        {!!existingScores.length && <p>{getHighScoreMessage()}</p>}
       </ScoreMessage>
       <Button
         className="playAgain"
