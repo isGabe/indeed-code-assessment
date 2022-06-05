@@ -1,17 +1,13 @@
 import { FC, useState, Dispatch, SetStateAction } from 'react';
-import Button from '../button';
-import { MdArrowRightAlt, MdAutorenew, MdDone, MdClear } from 'react-icons/md';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import ReplayIcon from '@mui/icons-material/Replay';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import { GameQuestion, GameStatus } from '../../types';
 
-import {
-  Wrapper,
-  Info,
-  Detail,
-  QuestionEl,
-  Answers,
-  Message,
-  Navigation
-} from './styles';
+import { Info, Detail, QuestionEl, Answers, Navigation } from './styles';
 interface IQuestionProps {
   question: GameQuestion;
   currentQuestion: number;
@@ -29,7 +25,7 @@ const Question: FC<IQuestionProps> = ({
   gameStatus,
   startOver
 }) => {
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   const handleCheckAnswer = (
@@ -62,24 +58,8 @@ const Question: FC<IQuestionProps> = ({
     }
   };
 
-  const getAnswerStatus = (answer: string): string | undefined => {
-    if (selectedAnswer === answer) {
-      return isCorrect ? 'correct' : 'incorrect';
-    }
-
-    return undefined;
-  };
-
-  const getAnswerIcon = (answer: string): JSX.Element | undefined => {
-    if (selectedAnswer === answer) {
-      return isCorrect ? <MdDone /> : <MdClear />;
-    }
-
-    return undefined;
-  };
-
   return (
-    <Wrapper key={question.question}>
+    <>
       <Info>
         <Detail>
           <span className="label">Category:</span>{' '}
@@ -95,47 +75,50 @@ const Question: FC<IQuestionProps> = ({
           __html: question.question
         }}
       />
-      <Message isCorrect={isCorrect !== null && isCorrect}>
-        {isCorrect !== null && isCorrect
-          ? 'Correct!'
-          : isCorrect !== null && !isCorrect
-          ? 'Incorrect!'
-          : ''}
-      </Message>
+
+      {selectedAnswer && (
+        <Alert
+          severity={isCorrect ? 'success' : 'error'}
+          className="message"
+          icon={isCorrect ? <CheckIcon /> : <ClearIcon />}
+        >
+          {isCorrect ? 'Correct!' : 'Incorrect!'}
+        </Alert>
+      )}
+
       <Answers>
         {question.answers.map((answer) => (
           <Button
-            className="answer"
-            variant="outlined"
-            key={answer}
+            variant={answer === selectedAnswer ? 'contained' : 'outlined'}
             onClick={() => handleCheckAnswer(answer, question.correct)}
-            disabled={isCorrect !== null}
-            answerStatus={getAnswerStatus(answer)}
-            icon={getAnswerIcon(answer)}
-            content={answer}
-          />
+            size="large"
+            key={answer}
+            sx={{ textTransform: 'none', fontSize: '1rem' }}
+          >
+            <span dangerouslySetInnerHTML={{ __html: answer }} />
+          </Button>
         ))}
       </Answers>
       <Navigation>
         <Button
-          type="button"
+          variant="contained"
           onClick={() => startOver()}
-          content="Start over"
-          icon={<MdAutorenew />}
-        />
+          startIcon={<ReplayIcon />}
+        >
+          Start Over
+        </Button>
         <Button
-          className="next"
+          variant="contained"
           onClick={() => handleNextQuestion()}
-          content={
-            gameStatus.currentQuestion === totalQuestions - 1
-              ? 'Get Score'
-              : 'Next Question'
-          }
-          icon={<MdArrowRightAlt />}
-          disabled={isCorrect === null}
-        />
+          endIcon={<ArrowRightAltIcon />}
+          disabled={!selectedAnswer}
+        >
+          {gameStatus.currentQuestion === totalQuestions - 1
+            ? 'Get Score'
+            : 'Next Question'}
+        </Button>
       </Navigation>
-    </Wrapper>
+    </>
   );
 };
 

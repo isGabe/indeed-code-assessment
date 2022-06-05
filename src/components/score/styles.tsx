@@ -2,10 +2,6 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   text-align: center;
-
-  .playAgain {
-    display: inline-flex;
-  }
 `;
 
 export const ScoreMessage = styled.div`

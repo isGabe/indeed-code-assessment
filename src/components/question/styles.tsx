@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-export const Wrapper = styled.div``;
+
 export const Info = styled.div`
   border-bottom: solid 1px var(--gray-5);
   color: var(--gray-7);
@@ -23,33 +23,13 @@ export const QuestionEl = styled.p`
 `;
 
 export const Answers = styled.div`
-  margin-bottom: 4rem;
-
-  .answer {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
+  margin: 1rem 0 3rem;
 
   @media (min-width: 640px) {
     display: grid;
     gap: 1rem;
     grid-template-columns: auto auto;
-
-    .answer {
-      width: unset;
-      margin-bottom: unset;
-    }
   }
-`;
-
-export const Message = styled.span`
-  display: block;
-  font-size: var(--font-size-3);
-  font-style: italic;
-  line-height: 1;
-  margin-bottom: 1rem;
-  min-height: var(--font-size-3);
-  text-align: center;
 `;
 
 export const Navigation = styled.div`

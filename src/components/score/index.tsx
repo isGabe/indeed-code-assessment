@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
-import { MdAutorenew } from 'react-icons/md';
-import Button from '../button';
+import Button from '@mui/material/Button';
+import ReplayIcon from '@mui/icons-material/Replay';
 import boom from '../../images/boom.png';
 import thumbsUp from '../../images/thumbsUp.png';
 import trophy from '../../images/trophy.png';
@@ -86,12 +86,12 @@ const Score: FC<IScoreProps> = ({ score, totalQuestions, startOver }) => {
         {!!existingScores.length && <p>{getHighScoreMessage()}</p>}
       </ScoreMessage>
       <Button
-        className="playAgain"
-        type="button"
+        variant="contained"
         onClick={() => startOver()}
-        content="Play again!"
-        icon={<MdAutorenew />}
-      />
+        startIcon={<ReplayIcon />}
+      >
+        Play Again!
+      </Button>
     </Wrapper>
   );
 };
