@@ -94,6 +94,7 @@ const Question: FC<IQuestionProps> = ({
             size="large"
             key={answer}
             sx={{ textTransform: 'none', fontSize: '1rem' }}
+            disabled={selectedAnswer !== null}
           >
             <span dangerouslySetInnerHTML={{ __html: answer }} />
           </Button>
